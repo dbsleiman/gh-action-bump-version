@@ -108,13 +108,6 @@ const workspace = process.env.GITHUB_WORKSPACE;
     return;
   }
 
-  // case: if user sets push to false, to skip pushing new tag/package.json
-  const push = process.env['INPUT_PUSH'];
-  if (push === 'false' || push === false) {
-    exitSuccess('User requested to skip pushing new tag and package.json. Finished.');
-    return;
-  }
-
   // GIT logic
   try {
     const current = pkg.version.toString();
@@ -167,6 +160,13 @@ const workspace = process.env.GITHUB_WORKSPACE;
       );
     }
 
+    // case: if user sets push to false, to skip pushing new tag/package.json
+    const push = process.env['INPUT_PUSH'];
+    if (push === 'false' || push === false) {
+      exitSuccess('User requested to skip pushing new tag and package.json. Finished.');
+      return;
+    }
+    
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`;
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
       await runInWorkspace('git', ['tag', newVersion]);
